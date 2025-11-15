@@ -1,4 +1,4 @@
-##Quran Ayah Analyzer - AI-Powered Research Tool | Complete Quranic Database with Custom Fields
+**Quran Ayah Analyzer - AI-Powered Research Tool | Complete Quranic Database with Custom Fields**
 📝 Description
 Assalamu Alaikum!
 In this Project, I'm sharing a powerful n8n automation workflow that helps researchers analyze the entire Quran ayah by ayah with custom data fields that aren't available anywhere on the internet.
