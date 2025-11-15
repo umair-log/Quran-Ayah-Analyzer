@@ -1,0 +1,1142 @@
+{
+  "name": "Ayah analyze",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        464,
+        432
+      ],
+      "id": "4504655d-75ed-409d-8cc9-f800d3e82950",
+      "name": "Process One by One"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.alquran.cloud/v1/ayah/{{ $json.surahNumber }}:{{ $json.ayahNumber }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        720,
+        448
+      ],
+      "id": "c885f882-89c9-4185-b18b-7167a3adff76",
+      "name": "Request Ayah"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the raw output string from previous node\nconst rawOutput = $input.item.json.output;\n\n// Remove the triple backticks and \"json\" label if present\nconst cleaned = rawOutput\n  .replace(/```json\\s*/i, '')  // Remove starting ```json\n  .replace(/```$/, '')         // Remove ending ```\n  .trim();\n\n// Parse the cleaned string into a JSON object\nlet parsed;\ntry {\n  parsed = JSON.parse(cleaned);\n} catch (e) {\n  throw new Error(`Failed to parse JSON: ${e.message}`);\n}\n\n// Return the parsed object as the new item\nreturn {\n  json: parsed\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        288
+      ],
+      "id": "ff19741a-0fe0-4a46-8d3d-038a526499fe",
+      "name": "Parse JSON"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1gWg6CYFE6rNfNKKetSjULDhGOGIn23-a8hC4HDCJaOE",
+          "mode": "list",
+          "cachedResultName": "Ayah DB",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gWg6CYFE6rNfNKKetSjULDhGOGIn23-a8hC4HDCJaOE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gWg6CYFE6rNfNKKetSjULDhGOGIn23-a8hC4HDCJaOE/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Ayat": "={{ $json.ayah }}",
+            "Topics": "={{ $json.topic }}",
+            "Types": "={{ $json.type }}",
+            "Total_word_count": "={{ $json.analysis.word_count }}",
+            "Total_letter_count": "={{ $json.analysis.total_letter_count }}",
+            "Total_dot_count": "={{ $json.analysis.total_dot_count }}",
+            "Words_array": "={{ $json.analysis.words }}",
+            "Repeated_words": "={{ $json.analysis.repeated_words }}",
+            "Unique_words": "={{ $json.analysis.unique_words }}",
+            "Surah_number": "={{ $('Request Ayah').item.json.data.surah.number }}",
+            "Ayah_number": "={{ $('Request Ayah').item.json.data.numberInSurah }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Ayat",
+              "displayName": "Ayat",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Surah_number",
+              "displayName": "Surah_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Ayah_number",
+              "displayName": "Ayah_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Topics",
+              "displayName": "Topics",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Types",
+              "displayName": "Types",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Total_word_count",
+              "displayName": "Total_word_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Total_letter_count",
+              "displayName": "Total_letter_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Total_dot_count",
+              "displayName": "Total_dot_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Unique_words",
+              "displayName": "Unique_words",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Repeated_words",
+              "displayName": "Repeated_words",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Words_array",
+              "displayName": "Words_array",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        1392,
+        432
+      ],
+      "id": "a40a72db-60a6-422c-a95d-89fcc93b77cf",
+      "name": "Append to Sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "p4LHQXEXr2l41YFu",
+          "name": "notforhome - mail"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.data.text }}",
+        "options": {
+          "systemMessage": "=You are a Qur'an Analysis AI.  \nYour task is to take a Qur'anic ayah as user input and return a JSON response with structured analysis.  \n\nRules:  \n1. Always return JSON only, no extra text or explanation.  \n2. JSON must include:  \n   - \"ayah\": the exact ayah text received.  \n   - \"analysis\":  \n       • \"words\": array of word objects with:  \n            - \"word\" (exact word)  \n            - \"letter_count\" (number of Arabic letters in that word)  \n            - \"dot_count\" (number of diacritical dots in that word)  \n       • \"word_count\": total words in the ayah.  \n       • \"total_letter_count\": sum of letters across all words.  \n       • \"total_dot_count\": sum of dots across all words.  \n       • \"unique_words\": number of unique words.  \n       • \"repeated_words\": list of repeated words (empty if none).  \n   - \"topic\": array of main themes for the ayah.  \n   - \"type\": array describing the ayah type (e.g., \"Warning\", \"Reminder\", \"Spiritual\").  \n\n3. Keep formatting clean, valid JSON.  \n4. No commentary outside JSON.  \n\nExample input:  \nٱقۡرَأۡ كِتَٰبَكَ كَفَىٰ بِنَفۡسِكَ ٱلۡيَوۡمَ عَلَيۡكَ حَسِيبٗا  \n\nExample output:  \n{\n  \"ayah\": \"ٱقۡرَأۡ كِتَٰبَكَ كَفَىٰ بِنَفۡسِكَ ٱلۡيَوۡمَ عَلَيۡكَ حَسِيبٗا\",\n  \"analysis\": {\n    \"words\": [\n      { \"word\": \"ٱقۡرَأۡ\", \"letter_count\": 4, \"dot_count\": 1 },\n      { \"word\": \"كِتَٰبَكَ\", \"letter_count\": 5, \"dot_count\": 3 },\n      { \"word\": \"كَفَىٰ\", \"letter_count\": 3, \"dot_count\": 1 },\n      { \"word\": \"بِنَفۡسِكَ\", \"letter_count\": 5, \"dot_count\": 5 },\n      { \"word\": \"ٱلۡيَوۡمَ\", \"letter_count\": 6, \"dot_count\": 2 },\n      { \"word\": \"عَلَيۡكَ\", \"letter_count\": 4, \"dot_count\": 3 },\n      { \"word\": \"حَسِيبٗا\", \"letter_count\": 5, \"dot_count\": 4 }\n    ],\n    \"word_count\": 7,\n    \"total_letter_count\": 32,\n    \"total_dot_count\": 19,\n    \"unique_words\": 7,\n    \"repeated_words\": []\n  },\n  \"topic\": [\"Accountability\", \"Judgment Day\", \"Self-Witness\"],\n  \"type\": [\"Warning\", \"Reminder\", \"Spiritual\"]\n}\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        912,
+        432
+      ],
+      "id": "77948ded-7cc0-48db-92fa-2f2e20bf6ea1",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        912,
+        656
+      ],
+      "id": "36925ec3-0536-402f-b023-6de22d57efb7",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "x4kO2ENJHI5Y2ENR",
+          "name": "Gemini Personal"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "path": "quran-analysis-form",
+        "formTitle": "Quran Analysis Configuration",
+        "formDescription": "Configure which verses you want to analyze",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Select Surah",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "1 - Al-Fatihah (7 verses)"
+                  },
+                  {
+                    "option": "2 - Al-Baqarah (286 verses)"
+                  },
+                  {
+                    "option": "3 - Ali 'Imran (200 verses)"
+                  },
+                  {
+                    "option": "4 - An-Nisa (176 verses)"
+                  },
+                  {
+                    "option": "5 - Al-Ma'idah (120 verses)"
+                  },
+                  {
+                    "option": "6 - Al-An'am (165 verses)"
+                  },
+                  {
+                    "option": "7 - Al-A'raf (206 verses)"
+                  },
+                  {
+                    "option": "8 - Al-Anfal (75 verses)"
+                  },
+                  {
+                    "option": "9 - At-Tawbah (129 verses)"
+                  },
+                  {
+                    "option": "10 - Yunus (109 verses)"
+                  },
+                  {
+                    "option": "11 - Hud (123 verses)"
+                  },
+                  {
+                    "option": "12 - Yusuf (111 verses)"
+                  },
+                  {
+                    "option": "13 - Ar-Ra'd (43 verses)"
+                  },
+                  {
+                    "option": "14 - Ibrahim (52 verses)"
+                  },
+                  {
+                    "option": "15 - Al-Hijr (99 verses)"
+                  },
+                  {
+                    "option": "16 - An-Nahl (128 verses)"
+                  },
+                  {
+                    "option": "17 - Al-Isra (111 verses)"
+                  },
+                  {
+                    "option": "18 - Al-Kahf (110 verses)"
+                  },
+                  {
+                    "option": "19 - Maryam (98 verses)"
+                  },
+                  {
+                    "option": "20 - Ta-Ha (135 verses)"
+                  },
+                  {
+                    "option": "21 - Al-Anbiya (112 verses)"
+                  },
+                  {
+                    "option": "22 - Al-Hajj (78 verses)"
+                  },
+                  {
+                    "option": "23 - Al-Mu'minun (118 verses)"
+                  },
+                  {
+                    "option": "24 - An-Nur (64 verses)"
+                  },
+                  {
+                    "option": "25 - Al-Furqan (77 verses)"
+                  },
+                  {
+                    "option": "26 - Ash-Shu'ara (227 verses)"
+                  },
+                  {
+                    "option": "27 - An-Naml (93 verses)"
+                  },
+                  {
+                    "option": "28 - Al-Qasas (88 verses)"
+                  },
+                  {
+                    "option": "29 - Al-'Ankabut (69 verses)"
+                  },
+                  {
+                    "option": "30 - Ar-Rum (60 verses)"
+                  },
+                  {
+                    "option": "31 - Luqman (34 verses)"
+                  },
+                  {
+                    "option": "32 - As-Sajdah (30 verses)"
+                  },
+                  {
+                    "option": "33 - Al-Ahzab (73 verses)"
+                  },
+                  {
+                    "option": "34 - Saba (54 verses)"
+                  },
+                  {
+                    "option": "35 - Fatir (45 verses)"
+                  },
+                  {
+                    "option": "36 - Ya-Sin (83 verses)"
+                  },
+                  {
+                    "option": "37 - As-Saffat (182 verses)"
+                  },
+                  {
+                    "option": "38 - Sad (88 verses)"
+                  },
+                  {
+                    "option": "39 - Az-Zumar (75 verses)"
+                  },
+                  {
+                    "option": "40 - Ghafir (85 verses)"
+                  },
+                  {
+                    "option": "41 - Fussilat (54 verses)"
+                  },
+                  {
+                    "option": "42 - Ash-Shura (53 verses)"
+                  },
+                  {
+                    "option": "43 - Az-Zukhruf (89 verses)"
+                  },
+                  {
+                    "option": "44 - Ad-Dukhan (59 verses)"
+                  },
+                  {
+                    "option": "45 - Al-Jathiyah (37 verses)"
+                  },
+                  {
+                    "option": "46 - Al-Ahqaf (35 verses)"
+                  },
+                  {
+                    "option": "47 - Muhammad (38 verses)"
+                  },
+                  {
+                    "option": "48 - Al-Fath (29 verses)"
+                  },
+                  {
+                    "option": "49 - Al-Hujurat (18 verses)"
+                  },
+                  {
+                    "option": "50 - Qaf (45 verses)"
+                  },
+                  {
+                    "option": "51 - Adh-Dhariyat (60 verses)"
+                  },
+                  {
+                    "option": "52 - At-Tur (49 verses)"
+                  },
+                  {
+                    "option": "53 - An-Najm (62 verses)"
+                  },
+                  {
+                    "option": "54 - Al-Qamar (55 verses)"
+                  },
+                  {
+                    "option": "55 - Ar-Rahman (78 verses)"
+                  },
+                  {
+                    "option": "56 - Al-Waqi'ah (96 verses)"
+                  },
+                  {
+                    "option": "57 - Al-Hadid (29 verses)"
+                  },
+                  {
+                    "option": "58 - Al-Mujadila (22 verses)"
+                  },
+                  {
+                    "option": "59 - Al-Hashr (24 verses)"
+                  },
+                  {
+                    "option": "60 - Al-Mumtahanah (13 verses)"
+                  },
+                  {
+                    "option": "61 - As-Saff (14 verses)"
+                  },
+                  {
+                    "option": "62 - Al-Jumu'ah (11 verses)"
+                  },
+                  {
+                    "option": "63 - Al-Munafiqun (11 verses)"
+                  },
+                  {
+                    "option": "64 - At-Taghabun (18 verses)"
+                  },
+                  {
+                    "option": "65 - At-Talaq (12 verses)"
+                  },
+                  {
+                    "option": "66 - At-Tahrim (12 verses)"
+                  },
+                  {
+                    "option": "67 - Al-Mulk (30 verses)"
+                  },
+                  {
+                    "option": "68 - Al-Qalam (52 verses)"
+                  },
+                  {
+                    "option": "69 - Al-Haqqah (52 verses)"
+                  },
+                  {
+                    "option": "70 - Al-Ma'arij (44 verses)"
+                  },
+                  {
+                    "option": "71 - Nuh (28 verses)"
+                  },
+                  {
+                    "option": "72 - Al-Jinn (28 verses)"
+                  },
+                  {
+                    "option": "73 - Al-Muzzammil (20 verses)"
+                  },
+                  {
+                    "option": "74 - Al-Muddaththir (56 verses)"
+                  },
+                  {
+                    "option": "75 - Al-Qiyamah (40 verses)"
+                  },
+                  {
+                    "option": "76 - Al-Insan (31 verses)"
+                  },
+                  {
+                    "option": "77 - Al-Mursalat (50 verses)"
+                  },
+                  {
+                    "option": "78 - An-Naba (40 verses)"
+                  },
+                  {
+                    "option": "79 - An-Nazi'at (46 verses)"
+                  },
+                  {
+                    "option": "80 - 'Abasa (42 verses)"
+                  },
+                  {
+                    "option": "81 - At-Takwir (29 verses)"
+                  },
+                  {
+                    "option": "82 - Al-Infitar (19 verses)"
+                  },
+                  {
+                    "option": "83 - Al-Mutaffifin (36 verses)"
+                  },
+                  {
+                    "option": "84 - Al-Inshiqaq (25 verses)"
+                  },
+                  {
+                    "option": "85 - Al-Buruj (22 verses)"
+                  },
+                  {
+                    "option": "86 - At-Tariq (17 verses)"
+                  },
+                  {
+                    "option": "87 - Al-A'la (19 verses)"
+                  },
+                  {
+                    "option": "88 - Al-Ghashiyah (26 verses)"
+                  },
+                  {
+                    "option": "89 - Al-Fajr (30 verses)"
+                  },
+                  {
+                    "option": "90 - Al-Balad (20 verses)"
+                  },
+                  {
+                    "option": "91 - Ash-Shams (15 verses)"
+                  },
+                  {
+                    "option": "92 - Al-Layl (21 verses)"
+                  },
+                  {
+                    "option": "93 - Ad-Duha (11 verses)"
+                  },
+                  {
+                    "option": "94 - Ash-Sharh (8 verses)"
+                  },
+                  {
+                    "option": "95 - At-Tin (8 verses)"
+                  },
+                  {
+                    "option": "96 - Al-'Alaq (19 verses)"
+                  },
+                  {
+                    "option": "97 - Al-Qadr (5 verses)"
+                  },
+                  {
+                    "option": "98 - Al-Bayyinah (8 verses)"
+                  },
+                  {
+                    "option": "99 - Az-Zalzalah (8 verses)"
+                  },
+                  {
+                    "option": "100 - Al-'Adiyat (11 verses)"
+                  },
+                  {
+                    "option": "101 - Al-Qari'ah (11 verses)"
+                  },
+                  {
+                    "option": "102 - At-Takathur (8 verses)"
+                  },
+                  {
+                    "option": "103 - Al-'Asr (3 verses)"
+                  },
+                  {
+                    "option": "104 - Al-Humazah (9 verses)"
+                  },
+                  {
+                    "option": "105 - Al-Fil (5 verses)"
+                  },
+                  {
+                    "option": "106 - Quraysh (4 verses)"
+                  },
+                  {
+                    "option": "107 - Al-Ma'un (7 verses)"
+                  },
+                  {
+                    "option": "108 - Al-Kawthar (3 verses)"
+                  },
+                  {
+                    "option": "109 - Al-Kafirun (6 verses)"
+                  },
+                  {
+                    "option": "110 - An-Nasr (3 verses)"
+                  },
+                  {
+                    "option": "111 - Al-Masad (5 verses)"
+                  },
+                  {
+                    "option": "112 - Al-Ikhlas (4 verses)"
+                  },
+                  {
+                    "option": "113 - Al-Falaq (5 verses)"
+                  },
+                  {
+                    "option": "114 - An-Nas (6 verses)"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Processing Mode",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Scan Whole Surah"
+                  },
+                  {
+                    "option": "Custom Range"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Start Ayah Number",
+              "fieldType": "number"
+            },
+            {
+              "fieldLabel": "End Ayah Number",
+              "fieldType": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2,
+      "position": [
+        0,
+        432
+      ],
+      "id": "822f7067-fb95-4aeb-b706-179e01aedb88",
+      "name": "Configuration Form",
+      "webhookId": "quran-analysis-form"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract surah number from dropdown selection\nconst surahSelection = $input.item.json[\"Select Surah\"];\nconst surahNumber = parseInt(surahSelection.split(' - ')[0]);\n\n// Get processing mode\nconst processingMode = $input.item.json[\"Processing Mode\"];\n\n// Verse counts for all 114 Surahs\nconst surahVerseCounts = {\n  1: 7, 2: 286, 3: 200, 4: 176, 5: 120,\n  6: 165, 7: 206, 8: 75, 9: 129, 10: 109,\n  11: 123, 12: 111, 13: 43, 14: 52, 15: 99,\n  16: 128, 17: 111, 18: 110, 19: 98, 20: 135,\n  21: 112, 22: 78, 23: 118, 24: 64, 25: 77,\n  26: 227, 27: 93, 28: 88, 29: 69, 30: 60,\n  31: 34, 32: 30, 33: 73, 34: 54, 35: 45,\n  36: 83, 37: 182, 38: 88, 39: 75, 40: 85,\n  41: 54, 42: 53, 43: 89, 44: 59, 45: 37,\n  46: 35, 47: 38, 48: 29, 49: 18, 50: 45,\n  51: 60, 52: 49, 53: 62, 54: 55, 55: 78,\n  56: 96, 57: 29, 58: 22, 59: 24, 60: 13,\n  61: 14, 62: 11, 63: 11, 64: 18, 65: 12,\n  66: 12, 67: 30, 68: 52, 69: 52, 70: 44,\n  71: 28, 72: 28, 73: 20, 74: 56, 75: 40,\n  76: 31, 77: 50, 78: 40, 79: 46, 80: 42,\n  81: 29, 82: 19, 83: 36, 84: 25, 85: 22,\n  86: 17, 87: 19, 88: 26, 89: 30, 90: 20,\n  91: 15, 92: 21, 93: 11, 94: 8, 95: 8,\n  96: 19, 97: 5, 98: 8, 99: 8, 100: 11,\n  101: 11, 102: 8, 103: 3, 104: 9, 105: 5,\n  106: 4, 107: 7, 108: 3, 109: 6, 110: 3,\n  111: 5, 112: 4, 113: 5, 114: 6\n};\n\nlet startAyah, endAyah;\n\nif (processingMode === \"Scan Whole Surah\") {\n  startAyah = 1;\n  endAyah = surahVerseCounts[surahNumber];\n} else {\n  startAyah = $input.item.json[\"Start Ayah Number\"] || 1;\n  endAyah = $input.item.json[\"End Ayah Number\"] || surahVerseCounts[surahNumber];\n}\n\n// Validate range\nif (startAyah < 1) startAyah = 1;\nif (endAyah > surahVerseCounts[surahNumber]) endAyah = surahVerseCounts[surahNumber];\nif (startAyah > endAyah) [startAyah, endAyah] = [endAyah, startAyah];\n\n// Generate array of ayahs to process\nconst ayahsToProcess = [];\nfor (let i = startAyah; i <= endAyah; i++) {\n  ayahsToProcess.push({\n    surahNumber: surahNumber,\n    ayahNumber: i\n  });\n}\n\nreturn ayahsToProcess.map(item => ({\n  json: item\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        432
+      ],
+      "id": "c9f9ce8a-cf89-4d74-b3af-111f205ffb89",
+      "name": "Generate Loop Data"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        512,
+        992
+      ],
+      "id": "b448f915-80b2-4ec4-9261-197a2338803a",
+      "name": "Process One by One1"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.alquran.cloud/v1/ayah/{{ $json.surahNumber }}:{{ $json.ayahNumber }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        768,
+        1008
+      ],
+      "id": "b1eec2d2-fa2d-4dee-b44b-00ae4853d02b",
+      "name": "Request Ayah1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the raw output string from previous node\nconst rawOutput = $input.item.json.output;\n\n// Remove the triple backticks and \"json\" label if present\nconst cleaned = rawOutput\n  .replace(/```json\\s*/i, '')  // Remove starting ```json\n  .replace(/```$/, '')         // Remove ending ```\n  .trim();\n\n// Parse the cleaned string into a JSON object\nlet parsed;\ntry {\n  parsed = JSON.parse(cleaned);\n} catch (e) {\n  throw new Error(`Failed to parse JSON: ${e.message}`);\n}\n\n// Return the parsed object as the new item\nreturn {\n  json: parsed\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1248,
+        848
+      ],
+      "id": "55e4d951-661f-4ca5-a9cf-e431818ffac7",
+      "name": "Parse JSON1"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1gWg6CYFE6rNfNKKetSjULDhGOGIn23-a8hC4HDCJaOE",
+          "mode": "list",
+          "cachedResultName": "Ayah DB",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gWg6CYFE6rNfNKKetSjULDhGOGIn23-a8hC4HDCJaOE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gWg6CYFE6rNfNKKetSjULDhGOGIn23-a8hC4HDCJaOE/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Ayat": "={{ $json.ayah }}",
+            "Topics": "={{ $json.topic }}",
+            "Types": "={{ $json.type }}",
+            "Total_word_count": "={{ $json.analysis.word_count }}",
+            "Total_letter_count": "={{ $json.analysis.total_letter_count }}",
+            "Total_dot_count": "={{ $json.analysis.total_dot_count }}",
+            "Words_array": "={{ $json.analysis.words }}",
+            "Repeated_words": "={{ $json.analysis.repeated_words }}",
+            "Unique_words": "={{ $json.analysis.unique_words }}",
+            "Surah_number": "={{ $('Request Ayah1').item.json.data.surah.number }}",
+            "Ayah_number": "={{ $('Request Ayah1').item.json.data.numberInSurah }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Ayat",
+              "displayName": "Ayat",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Surah_number",
+              "displayName": "Surah_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Ayah_number",
+              "displayName": "Ayah_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Topics",
+              "displayName": "Topics",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Types",
+              "displayName": "Types",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Total_word_count",
+              "displayName": "Total_word_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Total_letter_count",
+              "displayName": "Total_letter_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Total_dot_count",
+              "displayName": "Total_dot_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Unique_words",
+              "displayName": "Unique_words",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Repeated_words",
+              "displayName": "Repeated_words",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Words_array",
+              "displayName": "Words_array",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        1440,
+        992
+      ],
+      "id": "a81dc734-abfd-4966-b980-3914d94730a2",
+      "name": "Append to Sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "p4LHQXEXr2l41YFu",
+          "name": "notforhome - mail"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.data.text }}",
+        "options": {
+          "systemMessage": "=You are a Qur'an Analysis AI.  \nYour task is to take a Qur'anic ayah as user input and return a JSON response with structured analysis.  \n\nRules:  \n1. Always return JSON only, no extra text or explanation.  \n2. JSON must include:  \n   - \"ayah\": the exact ayah text received.  \n   - \"analysis\":  \n       • \"words\": array of word objects with:  \n            - \"word\" (exact word)  \n            - \"letter_count\" (number of Arabic letters in that word)  \n            - \"dot_count\" (number of diacritical dots in that word)  \n       • \"word_count\": total words in the ayah.  \n       • \"total_letter_count\": sum of letters across all words.  \n       • \"total_dot_count\": sum of dots across all words.  \n       • \"unique_words\": number of unique words.  \n       • \"repeated_words\": list of repeated words (empty if none).  \n   - \"topic\": array of main themes for the ayah.  \n   - \"type\": array describing the ayah type (e.g., \"Warning\", \"Reminder\", \"Spiritual\").  \n\n3. Keep formatting clean, valid JSON.  \n4. No commentary outside JSON.  \n\nExample input:  \nٱقۡرَأۡ كِتَٰبَكَ كَفَىٰ بِنَفۡسِكَ ٱلۡيَوۡمَ عَلَيۡكَ حَسِيبٗا  \n\nExample output:  \n{\n  \"ayah\": \"ٱقۡرَأۡ كِتَٰبَكَ كَفَىٰ بِنَفۡسِكَ ٱلۡيَوۡمَ عَلَيۡكَ حَسِيبٗا\",\n  \"analysis\": {\n    \"words\": [\n      { \"word\": \"ٱقۡرَأۡ\", \"letter_count\": 4, \"dot_count\": 1 },\n      { \"word\": \"كِتَٰبَكَ\", \"letter_count\": 5, \"dot_count\": 3 },\n      { \"word\": \"كَفَىٰ\", \"letter_count\": 3, \"dot_count\": 1 },\n      { \"word\": \"بِنَفۡسِكَ\", \"letter_count\": 5, \"dot_count\": 5 },\n      { \"word\": \"ٱلۡيَوۡمَ\", \"letter_count\": 6, \"dot_count\": 2 },\n      { \"word\": \"عَلَيۡكَ\", \"letter_count\": 4, \"dot_count\": 3 },\n      { \"word\": \"حَسِيبٗا\", \"letter_count\": 5, \"dot_count\": 4 }\n    ],\n    \"word_count\": 7,\n    \"total_letter_count\": 32,\n    \"total_dot_count\": 19,\n    \"unique_words\": 7,\n    \"repeated_words\": []\n  },\n  \"topic\": [\"Accountability\", \"Judgment Day\", \"Self-Witness\"],\n  \"type\": [\"Warning\", \"Reminder\", \"Spiritual\"]\n}\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        960,
+        992
+      ],
+      "id": "d63cfdc0-71cb-44e9-84e9-d8427447caa3",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        960,
+        1216
+      ],
+      "id": "475f13bf-80e7-46a0-9c0f-a6ea5f7b8c67",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "x4kO2ENJHI5Y2ENR",
+          "name": "Gemini Personal"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Verse counts for all 114 Surahs\nconst surahVerseCounts = {\n  1: 7, 2: 286, 3: 200, 4: 176, 5: 120,\n  6: 165, 7: 206, 8: 75, 9: 129, 10: 109,\n  11: 123, 12: 111, 13: 43, 14: 52, 15: 99,\n  16: 128, 17: 111, 18: 110, 19: 98, 20: 135,\n  21: 112, 22: 78, 23: 118, 24: 64, 25: 77,\n  26: 227, 27: 93, 28: 88, 29: 69, 30: 60,\n  31: 34, 32: 30, 33: 73, 34: 54, 35: 45,\n  36: 83, 37: 182, 38: 88, 39: 75, 40: 85,\n  41: 54, 42: 53, 43: 89, 44: 59, 45: 37,\n  46: 35, 47: 38, 48: 29, 49: 18, 50: 45,\n  51: 60, 52: 49, 53: 62, 54: 55, 55: 78,\n  56: 96, 57: 29, 58: 22, 59: 24, 60: 13,\n  61: 14, 62: 11, 63: 11, 64: 18, 65: 12,\n  66: 12, 67: 30, 68: 52, 69: 52, 70: 44,\n  71: 28, 72: 28, 73: 20, 74: 56, 75: 40,\n  76: 31, 77: 50, 78: 40, 79: 46, 80: 42,\n  81: 29, 82: 19, 83: 36, 84: 25, 85: 22,\n  86: 17, 87: 19, 88: 26, 89: 30, 90: 20,\n  91: 15, 92: 21, 93: 11, 94: 8, 95: 8,\n  96: 19, 97: 5, 98: 8, 99: 8, 100: 11,\n  101: 11, 102: 8, 103: 3, 104: 9, 105: 5,\n  106: 4, 107: 7, 108: 3, 109: 6, 110: 3,\n  111: 5, 112: 4, 113: 5, 114: 6\n};\n\n// Generate array of all ayahs in the Quran\nconst ayahsToProcess = [];\n\n// Loop through all 114 Surahs\nfor (let surahNum = 1; surahNum <= 114; surahNum++) {\n  const verseCount = surahVerseCounts[surahNum];\n  \n  // Loop through all verses in this Surah\n  for (let ayahNum = 1; ayahNum <= verseCount; ayahNum++) {\n    ayahsToProcess.push({\n      surahNumber: surahNum,\n      ayahNumber: ayahNum\n    });\n  }\n}\n\n// Return all 6,236 verses\nreturn ayahsToProcess.map(item => ({\n  json: item\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        256,
+        992
+      ],
+      "id": "1b114ecd-0591-40b0-8867-15e90ff860b5",
+      "name": "Generate Loop Data1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        992
+      ],
+      "id": "b5e32a8e-d166-466e-9d2f-c6f6b835085d",
+      "name": "When clicking ‘Execute workflow’",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "amount": 3
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1600,
+        432
+      ],
+      "id": "c3826b69-b053-4e6f-bb02-520c12dbda0c",
+      "name": "Wait",
+      "webhookId": "d7be69da-0d83-4722-949e-ed492fced8f7"
+    },
+    {
+      "parameters": {
+        "amount": 3
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1648,
+        992
+      ],
+      "id": "c8883305-5afe-4f6d-b3d3-8c889ae836bb",
+      "name": "Wait1",
+      "webhookId": "300025c2-9c67-4c29-90db-d626e08c1e9c"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Process One by One": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Request Ayah",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Request Ayah": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse JSON": {
+      "main": [
+        [
+          {
+            "node": "Append to Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append to Sheet": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Parse JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Configuration Form": {
+      "main": [
+        [
+          {
+            "node": "Generate Loop Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Loop Data": {
+      "main": [
+        [
+          {
+            "node": "Process One by One",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process One by One1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Request Ayah1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Request Ayah1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse JSON1": {
+      "main": [
+        [
+          {
+            "node": "Append to Sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append to Sheet1": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Parse JSON1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Loop Data1": {
+      "main": [
+        [
+          {
+            "node": "Process One by One1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Generate Loop Data1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Process One by One",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Process One by One1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "77e6bd9a-bf8f-4f74-937b-7463d506bf93",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d25b7124e8ff89c3f076f708c79037a6220a22dfb2126465853fb386e6707c45"
+  },
+  "id": "FidLIr2z7hTplqtj",
+  "tags": []
+}
